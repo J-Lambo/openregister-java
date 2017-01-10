@@ -31,7 +31,11 @@ public class RecordListResourceFunctionalTest {
     @Before
     public void publishTestMessages() {
         register.wipe();
-        register.mintLines(address, "{\"street\":\"ellis\",\"address\":\"12345\"}", "{\"street\":\"presley\",\"address\":\"6789\"}", "{\"street\":\"ellis\",\"address\":\"145678\"}", "{\"street\":\"updatedEllisName\",\"address\":\"145678\"}", "{\"street\":\"ellis\",\"address\":\"6789\"}");
+        register.mintLines(address, "{\"street\":\"ellis\",\"address\":\"12345\"}",
+                "{\"street\":\"presley\",\"address\":\"6789\"}",
+                "{\"street\":\"ellis\",\"address\":\"145678\"}",
+                "{\"street\":\"updatedEllisName\",\"address\":\"145678\"}",
+                "{\"street\":\"ellis\",\"address\":\"6789\"}");
     }
 
     @SuppressWarnings("unchecked")

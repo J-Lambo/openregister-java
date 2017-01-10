@@ -41,21 +41,28 @@ public abstract class RecordQueryDAO {
             " ) ck JOIN entry AS e ON ck.entry_number = e.entry_number " +
             " JOIN item AS i ON e.sha256hex = i.sha256hex ";
 
-    private static final String RECORDS_BY_CONTENT_SQL = "SELECT" +
-            " current_key.key, current_key.entry_number, e.timestamp, e.sha256hex, i.content " +
-            "FROM (" +
-            " SELECT e2.key AS key, max( e2.entry_number ) AS entry_number" +
-            " FROM entry e2" +
-            " WHERE e2.entry_number in (" +
-            " SELECT  e3.entry_number" +
-            " FROM  entry e3 join item i2 ON" +
-            "  e3.sha256hex = i2.sha256hex" +
-            " WHERE  i2.content @> :contentPGobject LIMIT 100" +
-            " )" +
-            " GROUP BY e2.key" +
-            " ) AS current_key JOIN entry e ON" +
-            " e.entry_number = current_key.entry_number JOIN item i ON" +
-            " e.sha256hex = i.sha256hex;";
+    private static final String RECORDS_BY_CONTENT_SQL = "WITH matching_entries AS (" +
+            " SELECT" +
+            "  e2.key AS matching_key, e2.entry_number AS en" +
+            " FROM" +
+            "  entry e2 JOIN item i2 ON " +
+            "  e2.sha256hex = i2.sha256hex" +
+            " WHERE" +
+            "  i2.content @> :contentPGobject " +
+            ") , records_for_matching AS (" +
+            " SELECT max(e3.entry_number) AS en FROM entry AS e3 " +
+            " WHERE e3.key IN (SELECT distinct matching_key FROM matching_entries) " +
+            " GROUP BY e3.key" +
+            ") , matching_records AS (" +
+            "  SELECT en FROM matching_entries " +
+            "  INTERSECT ALL " +
+            "  SELECT en FROM records_for_matching" +
+            ") " +
+            "SELECT" +
+            " e.key, mr.en AS entry_number, e.timestamp, e.sha256hex, i.content " +
+            "FROM" +
+            " matching_records AS mr JOIN entry AS e ON mr.en=e.entry_number " +
+            " JOIN item i ON e.sha256hex = i.sha256hex " ;
 
     @SqlQuery("SELECT count FROM total_records")
     public abstract int getTotalRecords();
