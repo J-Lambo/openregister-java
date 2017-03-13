@@ -20,7 +20,7 @@ import java.time.Instant;
 import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-@JsonPropertyOrder({"entry-number", "entry-timestamp", "item-hash", "key"})
+@JsonPropertyOrder({"entry-number", "entry-timestamp", "item-hashes", "key"})
 public class Entry implements CsvRepresentationView<Entry> {
     private final int entryNumber;
     private final List<HashValue> hashValues;
@@ -48,11 +48,12 @@ public class Entry implements CsvRepresentationView<Entry> {
 
     @SuppressWarnings("unused, used from DAO")
     @JsonProperty("item-hash")
+    @JsonIgnore
     public HashValue getSha256hex() {
         return hashValues.isEmpty() ? new HashValue("", "") : hashValues.get(0);
     }
 
-    @JsonIgnore
+    @JsonProperty("item-hashes")
     public List<HashValue> getItemHashes() {
         return hashValues;
     }
