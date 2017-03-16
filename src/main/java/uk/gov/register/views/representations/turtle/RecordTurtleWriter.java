@@ -31,18 +31,21 @@ public class RecordTurtleWriter extends TurtleRepresentationWriter<RecordView> {
     @Override
     protected Model rdfModelFor(RecordView view) {
         Entry entry = view.getEntry();
-        ItemView itemView = view.getItemView();
 
         Model recordModel = ModelFactory.createDefaultModel();
         Model entryModel = new EntryTurtleWriter(registerNameProvider, registerResolver).rdfModelFor(entry, false);
-        Model itemModel = new ItemTurtleWriter(registerNameProvider, registerResolver).rdfModelFor(itemView);
 
         Resource recordResource = recordModel.createResource(recordUri(view.getPrimaryKey()).toString());
         addPropertiesToResource(recordResource, entryModel.getResource(entryUri(Integer.toString(entry.getEntryNumber())).toString()));
-        addPropertiesToResource(recordResource, itemModel.getResource(itemUri(itemView.getItemHash().encode()).toString()));
 
         Map<String, String> prefixes = entryModel.getNsPrefixMap();
-        prefixes.putAll(itemModel.getNsPrefixMap());
+
+        view.getItemViews().forEach(iv -> {
+            Model itemModel = new ItemTurtleWriter(registerNameProvider, registerResolver).rdfModelFor(iv);
+            addPropertiesToResource(recordResource, itemModel.getResource(itemUri(iv.getItemHash().encode()).toString()));
+            prefixes.putAll(itemModel.getNsPrefixMap());
+        });
+
         recordModel.setNsPrefixes(prefixes);
 
         return recordModel;
@@ -50,7 +53,7 @@ public class RecordTurtleWriter extends TurtleRepresentationWriter<RecordView> {
 
     private void addPropertiesToResource(Resource to, Resource from) {
         StmtIterator iterator = from.listProperties();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Statement statement = iterator.next();
             to.addProperty(statement.getPredicate(), statement.getObject());
         }
