@@ -74,7 +74,7 @@ public class PostgresRegister implements Register {
 
     @Override
     public Optional<Record> getRecord(String key) {
-        return recordIndex.getRecord(key);
+        return recordIndex.getRecord(key).filter(record -> !record.getItems().isEmpty());
     }
 
     @Override
