@@ -20,7 +20,7 @@ import java.time.Instant;
 import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"index-entry-number", "entry-number", "entry-timestamp", "item-hash", "key"})
+@JsonPropertyOrder({"index-entry-number", "entry-number", "entry-timestamp", "key", "item-hash"})
 public class Entry implements CsvRepresentationView<Entry> {
     private final int entryNumber;
     private final List<HashValue> hashValues;
