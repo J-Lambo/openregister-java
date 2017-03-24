@@ -30,12 +30,14 @@ public class EntryTurtleWriter extends TurtleRepresentationWriter<Entry> {
     protected Model rdfModelFor(Entry entry, boolean includeKey) {
         Model model = ModelFactory.createDefaultModel();
         Property entryNumberProperty = model.createProperty(SPEC_PREFIX + "entry-number-field");
+        Property indexEntryNumberProperty = model.createProperty(SPEC_PREFIX + "index-entry-number-field");
         Property entryTimestampProperty = model.createProperty(SPEC_PREFIX + "entry-timestamp-field");
         Property itemProperty = model.createProperty(SPEC_PREFIX + "item-resource");
 
         String entryNumber = Integer.toString(entry.getEntryNumber());
         Resource resource = model.createResource(entryUri(entryNumber).toString())
                 .addProperty(entryNumberProperty, entryNumber)
+                .addProperty(indexEntryNumberProperty, entryNumber)
                 .addProperty(entryTimestampProperty, entry.getTimestampAsISOFormat());
 
         entry.getItemHashes().forEach(hash -> resource.addProperty(itemProperty, model.createResource(itemUri(hash.encode()).toString())));
