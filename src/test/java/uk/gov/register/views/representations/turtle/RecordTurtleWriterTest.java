@@ -68,15 +68,11 @@ public class RecordTurtleWriterTest {
             triples.add(triple);
         }
 
-        List<String> tripleList0 = Arrays.asList("http://reg.openregister.org/record/b", "http://field.openregister.org/record/a", "d");
-        List<String> tripleList1 = Arrays.asList("http://reg.openregister.org/record/b","http://field.openregister.org/record/a", "b");
         List<String> tripleList2 = Arrays.asList("http://reg.openregister.org/record/b","https://openregister.github.io/specification/#entry-number-field", "1");
         List<String> tripleList3 = Arrays.asList("http://reg.openregister.org/record/b","https://openregister.github.io/specification/#entry-timestamp-field", "2016-08-05T13:24:00Z");
-        List<String> tripleList4 = Arrays.asList("http://reg.openregister.org/record/b","https://openregister.github.io/specification/#item-resource", "http://reg.openregister.org/item/sha-256:ab");
-        List<String> tripleList5 = Arrays.asList("http://reg.openregister.org/record/b","http://field.openregister.org/record/a", "d");
         List<String> tripleList6 = Arrays.asList("http://reg.openregister.org/record/b","https://openregister.github.io/specification/#index-entry-number-field", "1");
 
-        assertThat(triples, hasItems(tripleList0, tripleList1, tripleList2, tripleList3, tripleList4, tripleList5, tripleList6) ) ;
+        assertThat(triples, hasItems(tripleList2, tripleList3, tripleList6) ) ;
 
     }
 

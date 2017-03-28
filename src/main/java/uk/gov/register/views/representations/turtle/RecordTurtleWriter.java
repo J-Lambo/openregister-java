@@ -1,10 +1,6 @@
 package uk.gov.register.views.representations.turtle;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 import uk.gov.register.core.Entry;
 import uk.gov.register.core.RegisterName;
 import uk.gov.register.core.RegisterResolver;
@@ -33,17 +29,19 @@ public class RecordTurtleWriter extends TurtleRepresentationWriter<RecordView> {
         Entry entry = view.getEntry();
 
         Model recordModel = ModelFactory.createDefaultModel();
-        Model entryModel = new EntryTurtleWriter(registerNameProvider, registerResolver).rdfModelFor(entry, false);
+        Model entryModel = new EntryTurtleWriter(registerNameProvider, registerResolver).rdfModelFor(entry);
 
         Resource recordResource = recordModel.createResource(recordUri(view.getPrimaryKey()).toString());
         addPropertiesToResource(recordResource, entryModel.getResource(entryUri(Integer.toString(entry.getEntryNumber())).toString()));
-
         Map<String, String> prefixes = entryModel.getNsPrefixMap();
+
+        Bag itemBag = recordModel.createBag(SPEC_PREFIX + "item-resource");
 
         view.getItemViews().forEach(iv -> {
             Model itemModel = new ItemTurtleWriter(registerNameProvider, registerResolver).rdfModelFor(iv);
-            addPropertiesToResource(recordResource, itemModel.getResource(itemUri(iv.getItemHash().encode()).toString()));
-            prefixes.putAll(itemModel.getNsPrefixMap());
+            Resource itemResource = itemModel.getResource(itemUri(iv.getItemHash().encode()).toString());
+            recordModel.add(itemModel);
+            itemBag.add( itemResource );
         });
 
         recordModel.setNsPrefixes(prefixes);
