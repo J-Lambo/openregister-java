@@ -43,6 +43,7 @@ public interface RegisterReadOnly {
 
     Iterator<Entry> getDerivationEntryIterator(String indexName);
     Iterator<Entry> getDerivationEntryIterator(String indexName, int totalEntries1, int totalEntries2);
+    int getCurrentIndexEntryNumber(String indexName);
 
     RegisterName getRegisterName();
 

@@ -197,6 +197,11 @@ public class PostgresRegister implements Register {
     }
 
     @Override
+    public int getDerivationMaxEntryNumber(String indexName) {
+        return entryLog.get
+    }
+
+    @Override
     public RegisterName getRegisterName() {
         return registerName;
     }

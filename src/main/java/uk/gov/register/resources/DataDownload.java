@@ -108,6 +108,15 @@ public class DataDownload {
     @DownloadNotAvailable
     @Timed
     public Response downloadIndexRSF(@PathParam("index-name") String indexName, @PathParam("total-entries-1") int totalEntries1, @PathParam("total-entries-2") int totalEntries2) {
+
+        validateTotalEntries(totalEntries1, totalEntries2);
+
+        int totalEntriesInRegister = register.get();
+
+        if (totalEntries2 > totalEntriesInRegister) {
+            throw new BadRequestException("total-entries-2 must not exceed number of total entries in the register");
+        }
+
         String rsfFileName = String.format("attachment; filename=rsf-%d.%s", System.currentTimeMillis(), rsfFormatter.getFileExtension());
         return Response
                 .ok((StreamingOutput) output -> rsfService.writeTo(output, rsfFormatter, indexName, totalEntries1, totalEntries2))
@@ -120,13 +129,7 @@ public class DataDownload {
     @DownloadNotAvailable
     @Timed
     public Response downloadPartialRSF(@PathParam("total-entries-1") int totalEntries1, @PathParam("total-entries-2") int totalEntries2) {
-        if (totalEntries1 < 0) {
-            throw new BadRequestException("total-entries-1 must be 0 or greater");
-        }
-
-        if (totalEntries2 < totalEntries1) {
-            throw new BadRequestException("total-entries-2 must be greater than or equal to total-entries-1");
-        }
+        validateTotalEntries(totalEntries1, totalEntries2);
 
         int totalEntriesInRegister = register.getTotalEntries();
 
@@ -146,6 +149,16 @@ public class DataDownload {
     @Timed
     public View download() {
         return viewFactory.downloadPageView(resourceConfiguration.getEnableDownloadResource());
+    }
+
+    private void validateTotalEntries(int totalEntries1, int totalEntries2) {
+        if (totalEntries1 < 0) {
+            throw new BadRequestException("total-entries-1 must be 0 or greater");
+        }
+
+        if (totalEntries2 < totalEntries1) {
+            throw new BadRequestException("total-entries-2 must be greater than or equal to total-entries-1");
+        }
     }
 }
 
