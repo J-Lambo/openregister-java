@@ -41,19 +41,10 @@ deploy:
   secret_access_key: &1
     secure: pgSuUJNcYfBweFXGqH7ATg7asOFg1/fxe0KVGgD2ejLqvseepMc7KZPUgmgzb+JsFcowirP9nLr3UhDuLv0wQHPlTdtwsBOWzYjFUx14T8LmeVI9vfr+x0+1Lk12+o2dmHrwznoOuIdpTbfoLGSmHxCVWePO7gp/DRi63agAkMpHHh0lsVqSJwStYipBEpzMJqhQn3luEB7sbvIlQ8X9fGMth4mM1WyodI7fO7Fek7pjKoxVc0ID/yQXC+8M8RCBCWgdTlAhOHJgMZfh1aTE9bwhBxoTMZXIDpC/VvLy2H8pngJaF0BYh2kJ86iPz+CvEqVmIQDSJV7732tFH65oLGrKtmePgF47aS+0S+AbCzjCnFuPxerE2WmKPA6QZL1TpsPfm26jsGzDiAfMY+qEqjaJf9dSoDzRsPwXsiNZgy0qCXY2wLhTTJu9fgBlim0RCzc1ONJnc4x8hWaJvZNm5/7OgcrcX81BMr/tj7pf7unIyMxKGMH40hGeJo+zJBPNFeryW4sy7UNDRD1mqmHg4ZVA8WbhlARyCA8LD4c29Td5SNwmJQqAiSb2D4yQGjUumQxvjKtV9H4Hi4O8mo0H3HLnoUCghp15FpzRiG/3EVi55/VOyqk3z/AF6vdzB7MeE5c6zR/hNKZYiXOYyCTyJcYdO3W89zZMHzNYcbjQ5N0=
   local_dir: deployable_bundle
-  bucket: openregister.app.artifacts
+  bucket: openregister-java-codebuild-test
   region: eu-west-1
   skip_cleanup: true
-  on: &2
-    branch: master
+  on:
+    branch: pipeline-test
     condition: $DEPLOY=true
-- provider: codedeploy
-  access_key_id: AKIAINSAHPOLGXFFYGMQ
-  secret_access_key: *1
-  bucket: openregister.app.artifacts
-  key: openregister-java-$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT.zip
-  bundle_type: zip
-  application: openregister-app
-  deployment_group: test
-  region: eu-west-1
-  on: *2
+
