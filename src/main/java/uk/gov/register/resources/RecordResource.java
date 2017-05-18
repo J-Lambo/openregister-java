@@ -45,7 +45,7 @@ public class RecordResource {
     public RecordView getRecordByKey(@PathParam("record-key") String key) {
         httpServletResponseAdapter.addLinkHeader("version-history", String.format("/record/%s/entries", key));
 
-        return register.getRecord(key).map(viewFactory::getRecordMediaView)
+        return register.getDerivationRecord(key,"record").map(viewFactory::getRecordMediaView)
                 .orElseThrow(NotFoundException::new);
     }
 

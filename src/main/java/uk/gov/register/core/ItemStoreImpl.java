@@ -19,7 +19,7 @@ public class ItemStoreImpl implements ItemStore {
 
     @Override
     public void putItem(Item item) {
-        itemValidator.validateItem(item.getContent());
+        //itemValidator.validateItem(item.getContent());
         dataAccessLayer.putItem(item);
     }
 
