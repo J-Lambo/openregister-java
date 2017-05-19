@@ -14,32 +14,37 @@ import java.util.stream.IntStream;
 public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer implements DataAccessLayer {
     private final List<Entry> stagedEntries;
     private final Map<HashValue, Item> stagedItems;
-    private final HashMap<String, Integer> stagedCurrentKeys;
+    //private final HashMap<String, Integer> stagedCurrentKeys;
     private final Set<String> entriesWithoutItems;
 
     private final EntryDAO entryDAO;
     private final EntryItemDAO entryItemDAO;
     private final ItemDAO itemDAO;
-    private final CurrentKeysUpdateDAO currentKeysDAO;
+    //private final CurrentKeysUpdateDAO currentKeysDAO;
 
     public PostgresDataAccessLayer(
             EntryQueryDAO entryQueryDAO, IndexQueryDAO indexQueryDAO, EntryDAO entryDAO,
             EntryItemDAO entryItemDAO, ItemQueryDAO itemQueryDAO,
-            ItemDAO itemDAO, RecordQueryDAO recordQueryDAO, CurrentKeysUpdateDAO currentKeysUpdateDAO) {
+            ItemDAO itemDAO, RecordQueryDAO recordQueryDAO
+            //CurrentKeysUpdateDAO currentKeysUpdateDAO
+    ) {
         super(entryQueryDAO, indexQueryDAO, itemQueryDAO, recordQueryDAO);
         this.entryDAO = entryDAO;
         this.entryItemDAO = entryItemDAO;
         this.itemDAO = itemDAO;
-        this.currentKeysDAO = currentKeysUpdateDAO;
+        //this.currentKeysDAO = currentKeysUpdateDAO;
 
         stagedEntries = new ArrayList<>();
         stagedItems = new HashMap<>();
-        stagedCurrentKeys = new HashMap<>();
+        //stagedCurrentKeys = new HashMap<>();
         entriesWithoutItems = new HashSet<>();
     }
 
     @Override
     public void appendEntry(Entry entry) {
+        if (entry.getItemHashes().isEmpty()) {
+            entriesWithoutItems.add(entry.getKey());
+        }
         stagedEntries.add(entry);
     }
 
@@ -57,20 +62,20 @@ public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer impleme
         stagedItems.put(item.getSha256hex(), item);
     }
 
-    @Override
-    public void updateRecordIndex(Entry entry) {
-        stagedCurrentKeys.put(entry.getKey(), entry.getEntryNumber());
-
-        if (entry.getItemHashes().isEmpty()) {
-            entriesWithoutItems.add(entry.getKey());
-        }
-    }
+//    @Override
+//    public void updateRecordIndex(Entry entry) {
+//        //stagedCurrentKeys.put(entry.getKey(), entry.getEntryNumber());
+//
+//        if (entry.getItemHashes().isEmpty()) {
+//            entriesWithoutItems.add(entry.getKey());
+//        }
+//    }
 
     @Override
     public void checkpoint() {
         writeStagedEntriesToDatabase();
         writeStagedItemsToDatabase();
-        writeStagedCurrentKeysToDatabase();
+        //  writeStagedCurrentKeysToDatabase();
     }
 
     private void writeStagedEntriesToDatabase() {
@@ -95,17 +100,17 @@ public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer impleme
         stagedItems.clear();
     }
 
-    private void writeStagedCurrentKeysToDatabase() {
-        int noOfRecordsDeleted = removeRecordsWithKeys(stagedCurrentKeys.keySet());
-
-        currentKeysDAO.writeCurrentKeys(Iterables.transform(stagedCurrentKeys.entrySet(),
-                keyValue -> new CurrentKey(keyValue.getKey(), keyValue.getValue()))
-        );
-
-        currentKeysDAO.updateTotalRecords(stagedCurrentKeys.size() - noOfRecordsDeleted - entriesWithoutItems.size());
-        stagedCurrentKeys.clear();
-        entriesWithoutItems.clear();
-    }
+//    private void writeStagedCurrentKeysToDatabase() {
+//        int noOfRecordsDeleted = removeRecordsWithKeys(stagedCurrentKeys.keySet());
+//
+//        currentKeysDAO.writeCurrentKeys(Iterables.transform(stagedCurrentKeys.entrySet(),
+//                keyValue -> new CurrentKey(keyValue.getKey(), keyValue.getValue()))
+//        );
+//
+//        currentKeysDAO.updateTotalRecords(stagedCurrentKeys.size() - noOfRecordsDeleted - entriesWithoutItems.size());
+//        stagedCurrentKeys.clear();
+//        entriesWithoutItems.clear();
+//    }
 
     private OptionalInt getMaxStagedEntryNumber() {
         if (stagedEntries.isEmpty()) {
@@ -114,8 +119,8 @@ public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer impleme
         return OptionalInt.of(stagedEntries.get(stagedEntries.size() - 1).getEntryNumber());
     }
 
-    private int removeRecordsWithKeys(Iterable<String> keySet) {
-        int[] noOfRecordsDeletedPerBatch = currentKeysDAO.removeRecordWithKeys(keySet);
-        return IntStream.of(noOfRecordsDeletedPerBatch).sum();
-    }
+//    private int removeRecordsWithKeys(Iterable<String> keySet) {
+//        int[] noOfRecordsDeletedPerBatch = currentKeysDAO.removeRecordWithKeys(keySet);
+//        return IntStream.of(noOfRecordsDeletedPerBatch).sum();
+//    }
 }

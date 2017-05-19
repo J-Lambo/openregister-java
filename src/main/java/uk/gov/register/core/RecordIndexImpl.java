@@ -13,10 +13,10 @@ public class RecordIndexImpl implements RecordIndex {
         this.dataAccessLayer = dataAccessLayer;
     }
 
-    @Override
-    public void updateRecordIndex(Entry entry) {
-        dataAccessLayer.updateRecordIndex(entry);
-    }
+//    @Override
+//    public void updateRecordIndex(Entry entry) {
+//        dataAccessLayer.updateRecordIndex(entry);
+//    }
 
     @Override
     public Optional<Record> getRecord(String key) {
@@ -41,5 +41,22 @@ public class RecordIndexImpl implements RecordIndex {
     @Override
     public Collection<Entry> findAllEntriesOfRecordBy(String key) {
         return dataAccessLayer.findAllEntriesOfRecordBy(key);
+    }
+
+    // indexes
+    @Override
+    public Optional<Record> getRecord(String key, String derivationName) {
+        Optional<Record> record = dataAccessLayer.getIndexRecord(key, derivationName);
+        return record.filter(r -> r.getItems().size() != 0);
+    }
+
+    @Override
+    public List<Record> getRecords(int limit, int offset, String derivationName) {
+        return dataAccessLayer.getIndexRecords(limit, offset, derivationName);
+    }
+
+    @Override
+    public int getTotalRecords(String derivationName) {
+        return dataAccessLayer.getTotalIndexRecords(derivationName);
     }
 }

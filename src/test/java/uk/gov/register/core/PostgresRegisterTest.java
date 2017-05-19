@@ -26,8 +26,8 @@ public class PostgresRegisterTest {
     private final InMemoryEntryDAO entryDAO = new InMemoryEntryDAO(new ArrayList<>());
     @Mock
     private RecordIndex recordIndex;
-    @Mock
-    private DerivationRecordIndex derivationRecordIndex;
+   // @Mock
+   // private DerivationRecordIndex derivationRecordIndex;
     @Mock
     private ItemValidator itemValidator;
     @Mock
@@ -45,7 +45,7 @@ public class PostgresRegisterTest {
     public void setup() {
         register = new PostgresRegister(registerMetadata("register"), registerFieldsConfiguration,
                 inMemoryEntryLog(entryDAO, entryDAO), inMemoryItemStore(itemValidator, entryDAO), recordIndex,
-                indexDAO, indexQueryDAO, derivationRecordIndex, indexFunctions);
+                indexDAO, indexQueryDAO, indexFunctions);
     }
 
     @Test(expected = NoSuchFieldException.class)

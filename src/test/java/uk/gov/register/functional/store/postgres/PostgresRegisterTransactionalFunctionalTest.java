@@ -45,7 +45,7 @@ public class PostgresRegisterTransactionalFunctionalTest {
     private DBI dbi;
     private TestEntryDAO testEntryDAO;
     private Handle handle;
-    private DerivationRecordIndex derivationRecordIndex = mock(DerivationRecordIndex.class);
+    //private DerivationRecordIndex derivationRecordIndex = mock(DerivationRecordIndex.class);
 
     @Before
     public void setUp() throws Exception {
@@ -160,7 +160,9 @@ public class PostgresRegisterTransactionalFunctionalTest {
         when(registerData.getRegisterName()).thenReturn(new RegisterName("address"));
         return new PostgresRegister(registerData, new RegisterFieldsConfiguration(emptyList()), entryLog, itemStore,
                 new RecordIndexImpl(dataAccessLayer),
-                handle.attach(IndexDAO.class), handle.attach(IndexQueryDAO.class), derivationRecordIndex, Collections.emptyList());
+                handle.attach(IndexDAO.class), handle.attach(IndexQueryDAO.class),
+                //derivationRecordIndex,
+                Collections.emptyList());
     }
 
     private PostgresDataAccessLayer getTransactionalDataAccessLayer(Handle handle) {
@@ -171,8 +173,9 @@ public class PostgresRegisterTransactionalFunctionalTest {
                 handle.attach(EntryItemDAO.class),
                 handle.attach(ItemQueryDAO.class),
                 handle.attach(ItemDAO.class),
-                handle.attach(RecordQueryDAO.class),
-                handle.attach(CurrentKeysUpdateDAO.class));
+                handle.attach(RecordQueryDAO.class)
+                //handle.attach(CurrentKeysUpdateDAO.class)
+        );
     }
 }
 

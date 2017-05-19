@@ -66,6 +66,7 @@ public class RegisterContext implements
         this.custodianName = custodianName;
         this.similarRegisters = similarRegisters;
         this.indexFunctionConfigs = mapIndexes(indexNames);
+        indexFunctionConfigs.add(IndexFunctionConfiguration.RECORD);
         this.memoizationStore = new AtomicReference<>(new InMemoryPowOfTwoNoLeaves());
         this.trackingId = trackingId;
         this.enableRegisterDataDelete = enableRegisterDataDelete;
@@ -105,7 +106,7 @@ public class RegisterContext implements
                 new RecordIndexImpl(dataAccessLayer),
                 dbi.onDemand(IndexDAO.class),
                 dbi.onDemand(IndexQueryDAO.class),
-                new DerivationRecordIndex(dataAccessLayer),
+                //new DerivationRecordIndex(dataAccessLayer),
                 getIndexFunctions());
     }
 
@@ -117,7 +118,7 @@ public class RegisterContext implements
                 new RecordIndexImpl(dataAccessLayer),
                 handle.attach(IndexDAO.class),
                 handle.attach(IndexQueryDAO.class),
-                new DerivationRecordIndex(dataAccessLayer),
+             //   new DerivationRecordIndex(dataAccessLayer),
                 getIndexFunctions());
     }
 
@@ -191,8 +192,9 @@ public class RegisterContext implements
                 dbi.onDemand(EntryItemDAO.class),
                 dbi.onDemand(ItemQueryDAO.class),
                 dbi.onDemand(ItemDAO.class),
-                dbi.onDemand(RecordQueryDAO.class),
-                dbi.onDemand(CurrentKeysUpdateDAO.class));
+                dbi.onDemand(RecordQueryDAO.class)
+               // dbi.onDemand(CurrentKeysUpdateDAO.class)
+        );
     }
 
     private PostgresDataAccessLayer getTransactionalDataAccessLayer(Handle handle) {
@@ -203,8 +205,9 @@ public class RegisterContext implements
                 handle.attach(EntryItemDAO.class),
                 handle.attach(ItemQueryDAO.class),
                 handle.attach(ItemDAO.class),
-                handle.attach(RecordQueryDAO.class),
-                handle.attach(CurrentKeysUpdateDAO.class));
+                handle.attach(RecordQueryDAO.class)
+               // handle.attach(CurrentKeysUpdateDAO.class)
+        );
     }
 
     @Override

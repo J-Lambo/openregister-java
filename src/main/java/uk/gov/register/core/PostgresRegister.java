@@ -20,7 +20,7 @@ import java.util.Optional;
 
 public class PostgresRegister implements Register {
     private final RecordIndex recordIndex;
-    private final DerivationRecordIndex derivationRecordIndex;
+    //private final DerivationRecordIndex derivationRecordIndex;
     private final RegisterName registerName;
     private final EntryLog entryLog;
     private final ItemStore itemStore;
@@ -36,13 +36,13 @@ public class PostgresRegister implements Register {
                             RecordIndex recordIndex,
                             IndexDAO indexDAO,
                             IndexQueryDAO indexQueryDAO,
-                            DerivationRecordIndex derivationRecordIndex,
+                         //   DerivationRecordIndex derivationRecordIndex,
                             List<IndexFunction> indexFunctions) {
         registerName = registerMetadata.getRegisterName();
         this.entryLog = entryLog;
         this.itemStore = itemStore;
         this.recordIndex = recordIndex;
-        this.derivationRecordIndex = derivationRecordIndex;
+     //   this.derivationRecordIndex = derivationRecordIndex;
         this.registerFieldsConfiguration = registerFieldsConfiguration;
         this.registerMetadata = registerMetadata;
         this.indexDriver = new IndexDriver(this, indexDAO, indexQueryDAO);
@@ -62,7 +62,7 @@ public class PostgresRegister implements Register {
             indexDriver.indexEntry(this, entry, indexFunction);
         }
 
-        recordIndex.updateRecordIndex(entry);
+        //recordIndex.updateRecordIndex(entry);
     }
 
     @Override
@@ -191,17 +191,17 @@ public class PostgresRegister implements Register {
 
     @Override
     public Optional<Record> getDerivationRecord(String key, String derivationName) {
-        return derivationRecordIndex.getRecord(key, derivationName);
+        return recordIndex.getRecord(key, derivationName);
     }
 
     @Override
     public List<Record> getDerivationRecords(int limit, int offset, String derivationName) {
-        return derivationRecordIndex.getRecords(limit, offset, derivationName);
+        return recordIndex.getRecords(limit, offset, derivationName);
     }
 
     @Override
     public int getTotalDerivationRecords(String derivationName) {
-        return derivationRecordIndex.getTotalRecords(derivationName);
+        return recordIndex.getTotalRecords(derivationName);
     }
 
 }

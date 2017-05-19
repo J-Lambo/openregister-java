@@ -24,17 +24,17 @@ import java.util.Optional;
 public abstract class RecordQueryDAO {
     private static final ObjectMapper objectMapper = Jackson.newObjectMapper();
 
-    @SqlQuery("SELECT count FROM :schema.total_records")
-    public abstract int getTotalRecords();
+//    @SqlQuery("SELECT count FROM :schema.total_records")
+//    public abstract int getTotalRecords();
 
-    @SqlQuery("select e.entry_number, array_agg(ei.sha256hex) as sha256hex, e.timestamp, e.key, array_agg(i.content) as content from :schema.entry e join :schema.entry_item ei on ei.entry_number = e.entry_number and e.entry_number = (select entry_number from :schema.current_keys where :schema.current_keys.key=:key) join :schema.item i on i.sha256hex = ei.sha256hex group by e.entry_number")
-    @SingleValueResult(Record.class)
-    @RegisterMapper(RecordMapper.class)
-    public abstract Optional<Record> findByPrimaryKey(@Bind("key") String key);
+//    @SqlQuery("select e.entry_number, array_agg(ei.sha256hex) as sha256hex, e.timestamp, e.key, array_agg(i.content) as content from :schema.entry e join :schema.entry_item ei on ei.entry_number = e.entry_number and e.entry_number = (select entry_number from :schema.current_keys where :schema.current_keys.key=:key) join :schema.item i on i.sha256hex = ei.sha256hex group by e.entry_number")
+//    @SingleValueResult(Record.class)
+//    @RegisterMapper(RecordMapper.class)
+//    public abstract Optional<Record> findByPrimaryKey(@Bind("key") String key);
 
-    @SqlQuery("select e.entry_number, array_agg(ei.sha256hex) as sha256hex, e.timestamp, e.key, array_agg(i.content) as content from :schema.entry e join :schema.entry_item ei on ei.entry_number = e.entry_number join :schema.item i on i.sha256hex = ei.sha256hex join :schema.current_keys ck on ck.entry_number = e.entry_number group by e.entry_number order by e.entry_number desc limit :limit offset :offset")
-    @RegisterMapper(RecordMapper.class)
-    public abstract List<Record> getRecords(@Bind("limit") long limit, @Bind("offset") long offset);
+//    @SqlQuery("select e.entry_number, array_agg(ei.sha256hex) as sha256hex, e.timestamp, e.key, array_agg(i.content) as content from :schema.entry e join :schema.entry_item ei on ei.entry_number = e.entry_number join :schema.item i on i.sha256hex = ei.sha256hex join :schema.current_keys ck on ck.entry_number = e.entry_number group by e.entry_number order by e.entry_number desc limit :limit offset :offset")
+//    @RegisterMapper(RecordMapper.class)
+//    public abstract List<Record> getRecords(@Bind("limit") long limit, @Bind("offset") long offset);
 
     @SqlQuery("select e.entry_number, array_remove(array_agg(ei.sha256hex), null) as sha256hex, e.timestamp, e.key from :schema.entry e left join :schema.entry_item ei on ei.entry_number = e.entry_number where e.key = :key group by e.entry_number order by e.entry_number asc")
     @RegisterMapper(EntryMapper.class)

@@ -36,7 +36,7 @@ public interface DataAccessLayer {
     Iterator<Item> getItemIterator(int start, int end);
 
     // Record Index
-    void updateRecordIndex(Entry entry);
+    //void updateRecordIndex(Entry entry);
     Optional<Record> getRecord(String key);
     List<Record> getRecords(int limit, int offset);
     List<Record> findMax100RecordsByKeyValue(String key, String value);
