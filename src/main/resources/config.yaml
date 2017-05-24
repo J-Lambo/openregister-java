@@ -1,8 +1,8 @@
 database:
   driverClass: org.postgresql.Driver
-  url: ${DB_URL}
-  user: postgres
-  password:
+  url: "x?ssl=true"
+  user: "x"
+  password: "x"
 
   #db connection properties
   initialSize: 1

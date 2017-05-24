@@ -53,7 +53,7 @@ import java.util.Optional;
 public class RegisterApplication extends Application<RegisterConfiguration> {
     public static void main(String[] args) {
         try {
-            new RegisterApplication().run(args);
+            new RegisterApplication().run("server", "config.yaml");
         } catch (Exception e) {
             Throwables.propagate(e);
         }
