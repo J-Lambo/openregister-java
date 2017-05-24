@@ -1,0 +1,54 @@
+database:
+  driverClass: org.postgresql.Driver
+  url: ${DB_URL}
+  user: postgres
+  password:
+
+  #db connection properties
+  initialSize: 1
+  minSize: 1
+  maxSize: 4
+
+  properties:
+    charSet: UTF-8
+
+server:
+  requestLog:
+    type: classic
+    appenders:
+      - type: logstash-console
+  applicationConnectors:
+      - type: http
+        port: ${PORT}
+
+  registerDefaultExceptionMappers: false
+  adminConnectors:
+    - type: http
+      port: 9092
+
+registerDomain: openregister.dev:8080
+
+register: school
+
+enableDownloadResource: true
+
+schema: school
+
+historyPageUrl: https://registers-history.herokuapp.com/school-eng
+
+externalConfigDirectory: /tmp
+
+downloadConfigs: true
+
+# can be http: file s3: or classpath: url
+fieldsYamlLocation: classpath://config/fields.yaml
+
+registersYamlLocation: classpath://config/registers.yaml
+
+similarRegisters:
+  - address
+
+credentials:
+  user: foo
+  password: bar
+
