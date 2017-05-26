@@ -1,0 +1,6 @@
+---
+applications:
+- name: spike
+  memory: 512M
+  buildpack: java_buildpack
+
