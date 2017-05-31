@@ -1,6 +1,5 @@
 package uk.gov.register.store.postgres;
 
-import org.skife.jdbi.v2.sqlobject.Bind;
 import uk.gov.register.core.Entry;
 import uk.gov.register.core.Item;
 import uk.gov.register.core.Record;
@@ -9,7 +8,10 @@ import uk.gov.register.store.DataAccessLayer;
 import uk.gov.register.util.HashValue;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class PostgresReadDataAccessLayer implements DataAccessLayer {
