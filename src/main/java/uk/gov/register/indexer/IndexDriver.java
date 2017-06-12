@@ -77,7 +77,8 @@ public class IndexDriver {
     private void addIndexKeyToItemHash(IndexFunction indexFunction, AtomicInteger currentIndexEntryNumber, int currentEntryNumber, int newIndexEntryNumber, IndexKeyItemPairEvent p, int existingIndexCountForItem) {
         if (existingIndexCountForItem > 0) {
             dataAccessLayer.start(indexFunction.getName(), p.getIndexKey(), p.getItemHash().getValue(), currentEntryNumber, Optional.empty());
-        } else {
+        }
+        else {
             dataAccessLayer.start(indexFunction.getName(), p.getIndexKey(), p.getItemHash().getValue(), currentEntryNumber, Optional.of(newIndexEntryNumber));
             currentIndexEntryNumber.set(newIndexEntryNumber);
         }
