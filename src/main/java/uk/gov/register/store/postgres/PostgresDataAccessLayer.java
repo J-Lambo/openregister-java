@@ -21,9 +21,10 @@ public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer impleme
     private final EntryItemDAO entryItemDAO;
     private final ItemDAO itemDAO;
     private final CurrentKeysUpdateDAO currentKeysDAO;
+    private final IndexDAO indexDAO;
 
     public PostgresDataAccessLayer(
-            EntryQueryDAO entryQueryDAO, IndexQueryDAO indexQueryDAO, EntryDAO entryDAO,
+            EntryQueryDAO entryQueryDAO, IndexDAO indexDAO, IndexQueryDAO indexQueryDAO, EntryDAO entryDAO,
             EntryItemDAO entryItemDAO, ItemQueryDAO itemQueryDAO,
             ItemDAO itemDAO, RecordQueryDAO recordQueryDAO, CurrentKeysUpdateDAO currentKeysUpdateDAO) {
         super(entryQueryDAO, indexQueryDAO, itemQueryDAO, recordQueryDAO);
@@ -31,6 +32,7 @@ public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer impleme
         this.entryItemDAO = entryItemDAO;
         this.itemDAO = itemDAO;
         this.currentKeysDAO = currentKeysUpdateDAO;
+        this.indexDAO = indexDAO;
 
         stagedEntries = new ArrayList<>();
         stagedItems = new HashMap<>();
@@ -64,6 +66,16 @@ public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer impleme
         if (entry.getItemHashes().isEmpty()) {
             entriesWithoutItems.add(entry.getKey());
         }
+    }
+
+    @Override
+    public void start(String indexName, String key, String itemHash, int currentEntryNumber, Optional<Integer> startIndexEntryNumber) {
+        indexDAO.start(indexName, key, itemHash, currentEntryNumber, startIndexEntryNumber);
+    }
+
+    @Override
+    public void end(String indexName, String entryKey, String indexKey, String itemHash, int endEntryNumber, Optional<Integer> endIndexEntryNumber) {
+        indexDAO.end(indexName, entryKey, indexKey, itemHash, endEntryNumber, endIndexEntryNumber);
     }
 
     @Override

@@ -2,11 +2,10 @@ package uk.gov.register.core;
 
 import uk.gov.register.configuration.RegisterFieldsConfiguration;
 import uk.gov.register.db.DerivationRecordIndex;
-import uk.gov.register.db.IndexDAO;
-import uk.gov.register.db.IndexQueryDAO;
 import uk.gov.register.exceptions.NoSuchFieldException;
 import uk.gov.register.indexer.IndexDriver;
 import uk.gov.register.indexer.function.IndexFunction;
+import uk.gov.register.store.DataAccessLayer;
 import uk.gov.register.util.HashValue;
 import uk.gov.register.views.ConsistencyProof;
 import uk.gov.register.views.EntryProof;
@@ -34,8 +33,7 @@ public class PostgresRegister implements Register {
                             EntryLog entryLog,
                             ItemStore itemStore,
                             RecordIndex recordIndex,
-                            IndexDAO indexDAO,
-                            IndexQueryDAO indexQueryDAO,
+                            DataAccessLayer dataAccessLayer,
                             DerivationRecordIndex derivationRecordIndex,
                             List<IndexFunction> indexFunctions) {
         registerName = registerMetadata.getRegisterName();
@@ -45,7 +43,7 @@ public class PostgresRegister implements Register {
         this.derivationRecordIndex = derivationRecordIndex;
         this.registerFieldsConfiguration = registerFieldsConfiguration;
         this.registerMetadata = registerMetadata;
-        this.indexDriver = new IndexDriver(this, indexDAO, indexQueryDAO);
+        this.indexDriver = new IndexDriver(dataAccessLayer);
         this.indexFunctions = indexFunctions;
     }
 

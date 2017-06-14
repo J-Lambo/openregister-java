@@ -158,6 +158,16 @@ public abstract class PostgresReadDataAccessLayer implements DataAccessLayer {
     }
 
     @Override
+    public int getExistingIndexCountForItem(String indexName, String key, String itemHash) {
+        return indexQueryDAO.getExistingIndexCountForItem(indexName, key, itemHash);
+    }
+
+    @Override
+    public int getCurrentIndexEntryNumber(String indexName) {
+        return indexQueryDAO.getCurrentIndexEntryNumber(indexName);
+    }
+
+    @Override
     public int getTotalIndexRecords(String indexName) {
         return indexQueryDAO.getTotalRecords(indexName);
     }

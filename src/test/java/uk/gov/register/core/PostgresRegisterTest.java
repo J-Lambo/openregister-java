@@ -8,11 +8,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.register.configuration.RegisterFieldsConfiguration;
 import uk.gov.register.db.DerivationRecordIndex;
 import uk.gov.register.db.InMemoryEntryDAO;
-import uk.gov.register.db.IndexDAO;
-import uk.gov.register.db.IndexQueryDAO;
 import uk.gov.register.exceptions.NoSuchFieldException;
 import uk.gov.register.indexer.function.IndexFunction;
 import uk.gov.register.service.ItemValidator;
+import uk.gov.register.store.DataAccessLayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +30,7 @@ public class PostgresRegisterTest {
     @Mock
     private ItemValidator itemValidator;
     @Mock
-    private IndexDAO indexDAO;
-    @Mock
-    private IndexQueryDAO indexQueryDAO;
+    private DataAccessLayer dataAccessLayer;
     @Mock
     private RegisterFieldsConfiguration registerFieldsConfiguration;
     @Mock
@@ -45,7 +42,7 @@ public class PostgresRegisterTest {
     public void setup() {
         register = new PostgresRegister(registerMetadata("register"), registerFieldsConfiguration,
                 inMemoryEntryLog(entryDAO, entryDAO), inMemoryItemStore(itemValidator, entryDAO), recordIndex,
-                indexDAO, indexQueryDAO, derivationRecordIndex, indexFunctions);
+                dataAccessLayer, derivationRecordIndex, indexFunctions);
     }
 
     @Test(expected = NoSuchFieldException.class)

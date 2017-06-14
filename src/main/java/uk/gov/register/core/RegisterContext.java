@@ -103,8 +103,7 @@ public class RegisterContext implements
                 new EntryLogImpl(dataAccessLayer, memoizationStore.get()),
                 new ItemStoreImpl(dataAccessLayer, new ItemValidator(configManager, registerName)),
                 new RecordIndexImpl(dataAccessLayer),
-                dbi.onDemand(IndexDAO.class),
-                dbi.onDemand(IndexQueryDAO.class),
+                dataAccessLayer,
                 new DerivationRecordIndex(dataAccessLayer),
                 getIndexFunctions());
     }
@@ -115,8 +114,7 @@ public class RegisterContext implements
                 new EntryLogImpl(dataAccessLayer, memoizationStore),
                 new ItemStoreImpl(dataAccessLayer, new ItemValidator(configManager, registerName)),
                 new RecordIndexImpl(dataAccessLayer),
-                handle.attach(IndexDAO.class),
-                handle.attach(IndexQueryDAO.class),
+                dataAccessLayer,
                 new DerivationRecordIndex(dataAccessLayer),
                 getIndexFunctions());
     }
@@ -186,6 +184,7 @@ public class RegisterContext implements
     private DataAccessLayer getOnDemandDataAccessLayer() {
         return new PostgresDataAccessLayer(
                 dbi.onDemand(EntryQueryDAO.class),
+                dbi.onDemand(IndexDAO.class),
                 dbi.onDemand(IndexQueryDAO.class),
                 dbi.onDemand(EntryDAO.class),
                 dbi.onDemand(EntryItemDAO.class),
@@ -198,6 +197,7 @@ public class RegisterContext implements
     private PostgresDataAccessLayer getTransactionalDataAccessLayer(Handle handle) {
         return new PostgresDataAccessLayer(
                 handle.attach(EntryQueryDAO.class),
+                handle.attach(IndexDAO.class),
                 handle.attach(IndexQueryDAO.class),
                 handle.attach(EntryDAO.class),
                 handle.attach(EntryItemDAO.class),
