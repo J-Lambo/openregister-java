@@ -68,32 +68,4 @@ public abstract class Factories {
                     requestProvider.get().getHeader("Host"));
         }
     }
-
-//    public static class RegisterMetadataFactory extends SimpleFactory<RegisterMetadata> {
-//        private final Provider<RegisterContext> registerContextProvider;
-//
-//        @Inject
-//        public RegisterMetadataFactory(Provider<RegisterContext> registerContextProvider) {
-//            this.registerContextProvider = registerContextProvider;
-//        }
-//
-//        @Override
-//        public RegisterMetadata provide() {
-//            return registerContextProvider.get().getRegisterMetadata();
-//        }
-//    }
-
-//    public static class RegisterFieldsConfigurationFactory extends SimpleFactory<RegisterFieldsConfiguration> {
-//        private final RegisterMetadata registerMetadata;
-//
-//        @Inject
-//        public RegisterFieldsConfigurationFactory(RegisterMetadata registerMetadata) {
-//            this.registerMetadata = registerMetadata;
-//        }
-//
-//        @Override
-//        public RegisterFieldsConfiguration provide() {
-//            return new RegisterFieldsConfiguration(newArrayList(registerMetadata.getFields()));
-//        }
-//    }
 }

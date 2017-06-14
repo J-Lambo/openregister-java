@@ -35,8 +35,8 @@ public class RsfRegisterDefinition {
     public static String REGISTER_REGISTER =
         "add-item\t{\"cardinality\":\"1\",\"datatype\":\"string\",\"field\":\"register\",\"phase\":\"alpha\",\"text\":\"A register name.\"}\n" +
         "append-entry\tsystem\tfield:register\t2017-06-09T12:59:51Z\tsha-256:a36afdcbce5063e5e51e49ff6d646fe5e8bf83bdb2649e97794206857462daa3\n" +
-        "add-item\t{\"cardinality\":\"1\",\"datatype\":\"string\",\"field\":\"text\",\"phase\":\"alpha\",\"register\":\"address\",\"text\":\"Description of register entry.\"}\n" +
-        "append-entry\tsystem\tfield:text\t2017-06-09T12:59:51Z\tsha-256:9ff422bcc529f754408d95f99169d8aba14fb977d3dfc9278d7dfac517706439\n" +
+        "add-item\t{\"cardinality\":\"1\",\"datatype\":\"string\",\"field\":\"text\",\"phase\":\"alpha\",\"text\":\"Description of register entry.\"}\n" +
+        "append-entry\tsystem\tfield:text\t2017-06-09T12:59:51Z\tsha-256:243a2dafca693363f99c38487a03d1a241915c47a38ad5627ad941c9e52b4c7b\n" +
         "add-item\t{\"cardinality\":\"1\",\"datatype\":\"string\",\"field\":\"registry\",\"phase\":\"alpha\",\"text\":\"Body responsible for maintaining one or more registers\"}\n" +
         "append-entry\tsystem\tfield:registry\t2017-06-09T12:59:51Z\tsha-256:4624c413d90e125141a92f28c9ea4300a568d9b5d9c1c7ad13623433c4a370f2\n" +
         "add-item\t{\"cardinality\":\"1\",\"datatype\":\"string\",\"field\":\"phase\",\"phase\":\"alpha\",\"text\":\"Phase of a register or service as defined by the [digital service manual](https://www.gov.uk/service-manual).\"}\n" +
