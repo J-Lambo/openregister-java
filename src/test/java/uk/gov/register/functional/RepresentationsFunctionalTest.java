@@ -54,11 +54,11 @@ public class RepresentationsFunctionalTest {
     @Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-        //        {"json", "application/json"},
-        //        {"csv", "text/csv;charset=UTF-8"},
-        //        {"tsv", "text/tab-separated-values;charset=UTF-8"},
-                {"ttl", "text/turtle;charset=UTF-8"}
-        //        {"yaml", "text/yaml;charset=UTF-8"}
+                {"json", "application/json"},
+                {"csv", "text/csv;charset=UTF-8"},
+                {"tsv", "text/tab-separated-values;charset=UTF-8"},
+                {"ttl", "text/turtle;charset=UTF-8"},
+                {"yaml", "text/yaml;charset=UTF-8"}
         });
     }
 
@@ -126,11 +126,6 @@ public class RepresentationsFunctionalTest {
         assertThat(response.getStatus(), equalTo(200));
         assertThat(response.getHeaderString("Content-Type"), equalTo(expectedContentType));
         assertThat(response.readEntity(String.class).trim(), equalTo(expectedEntriesValue.trim()));
-    }
-
-    private List<String> getRsfLinesFrom(Response response) {
-        InputStream is = response.readEntity(InputStream.class);
-        return new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.toList());
     }
 
     @Test
