@@ -76,7 +76,7 @@ public abstract class PostgresReadDataAccessLayer implements DataAccessLayer {
 
     @Override
     public int getTotalEntries() {
-//        checkpoint();
+        checkpoint();
         return entryQueryDAO.getTotalEntries();
     }
 

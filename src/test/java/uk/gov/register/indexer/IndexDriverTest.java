@@ -123,7 +123,7 @@ public class IndexDriverTest {
                 .thenReturn(new HashSet<>(Arrays.asList(new IndexKeyItemPair("P", new HashValue(HashingAlgorithm.SHA256, "aaa")), new IndexKeyItemPair("P", new HashValue(HashingAlgorithm.SHA256, "bbb")))));
 
         IndexDriver indexDriver = new IndexDriver(dataAccessLayer);
-        indexDriver.indexEntry( register, newEntry, indexFunction);
+        indexDriver.indexEntry(register, newEntry, indexFunction, new HashMap<>(), 0);
 
         verify(dataAccessLayer, times(1)).start("by-x", "P", "bbb", 2, Optional.of(1));
         verifyNoMoreInteractions(indexDAO);
@@ -150,7 +150,7 @@ public class IndexDriverTest {
                 .thenReturn(new HashSet<>(Arrays.asList(new IndexKeyItemPair("P", new HashValue(HashingAlgorithm.SHA256, "bbb")))));
 
         IndexDriver indexDriver = new IndexDriver(dataAccessLayer);
-        indexDriver.indexEntry( register, newEntry, indexFunction);
+        indexDriver.indexEntry( register, newEntry, indexFunction, new HashMap<>(), 0);
 
         verify(dataAccessLayer, times(1)).end("by-x", "A", "P", "aaa", 2, Optional.of(1));
         verifyNoMoreInteractions(indexDAO);
@@ -179,7 +179,7 @@ public class IndexDriverTest {
 
 
         IndexDriver indexDriver = new IndexDriver(dataAccessLayer);
-        indexDriver.indexEntry( register, newEntry, indexFunction);
+        indexDriver.indexEntry(register, newEntry, indexFunction, new HashMap<>(), 0);
 
         verify(dataAccessLayer, times(1)).end("by-x", "A", "P", "aaa", 2, Optional.of(1));
         verify(dataAccessLayer, times(1)).start("by-x", "Q", "bbb", 2, Optional.of(2));
@@ -209,7 +209,7 @@ public class IndexDriverTest {
 
 
         IndexDriver indexDriver = new IndexDriver(dataAccessLayer);
-        indexDriver.indexEntry( register, newEntry, indexFunction);
+        indexDriver.indexEntry(register, newEntry, indexFunction, new HashMap<>(), 0);
 
         verify(dataAccessLayer, times(1)).start("by-x", "P", "aaa", 2, Optional.of(1));
         verify(dataAccessLayer, times(1)).end("by-x", "A", "Q", "bbb", 2, Optional.of(2));
@@ -239,7 +239,7 @@ public class IndexDriverTest {
 
 
         IndexDriver indexDriver = new IndexDriver(dataAccessLayer);
-        indexDriver.indexEntry( register, newEntry, indexFunction);
+        indexDriver.indexEntry(register, newEntry, indexFunction, new HashMap<>(), 0);
 
         verify(dataAccessLayer, times(1)).end("by-x", "A", "P", "aaa", 2, Optional.of(1));
         verify(dataAccessLayer, times(1)).start("by-x", "P", "bbb", 2, Optional.of(1));
@@ -268,8 +268,8 @@ public class IndexDriverTest {
                 .thenReturn(new HashSet<>(Arrays.asList(new IndexKeyItemPair("Q", new HashValue(HashingAlgorithm.SHA256, "bbb")))));
 
         IndexDriver indexDriver = new IndexDriver(dataAccessLayer);
-        indexDriver.indexEntry( register, newEntry1, indexFunction);
-        indexDriver.indexEntry( register, newEntry2, indexFunction);
+        indexDriver.indexEntry( register, newEntry1, indexFunction, new HashMap<>(), 0);
+        indexDriver.indexEntry( register, newEntry2, indexFunction, new HashMap<>(), 0);
 
         verify(dataAccessLayer, times(1)).start("by-x", "P", "aaa", 1, Optional.of(1));
         verify(dataAccessLayer, times(1)).start("by-x", "Q", "bbb", 2, Optional.of(2));
@@ -315,11 +315,11 @@ public class IndexDriverTest {
                 .thenReturn(new HashSet<>(Arrays.asList(new IndexKeyItemPair("R", new HashValue(HashingAlgorithm.SHA256, "ccc")))));
 
         IndexDriver indexDriver = new IndexDriver(dataAccessLayer);
-        indexDriver.indexEntry( register, newEntry1, indexFunction);
-        indexDriver.indexEntry( register, newEntry2, indexFunction);
-        indexDriver.indexEntry( register, newEntry3, indexFunction);
-        indexDriver.indexEntry( register, newEntry4, indexFunction);
-        indexDriver.indexEntry( register, newEntry5, indexFunction);
+        indexDriver.indexEntry( register, newEntry1, indexFunction, new HashMap<>(), 0);
+        indexDriver.indexEntry( register, newEntry2, indexFunction, new HashMap<>(), 0);
+        indexDriver.indexEntry( register, newEntry3, indexFunction, new HashMap<>(), 0);
+        indexDriver.indexEntry( register, newEntry4, indexFunction, new HashMap<>(), 0);
+        indexDriver.indexEntry( register, newEntry5, indexFunction, new HashMap<>(), 0);
 
         verify(dataAccessLayer, times(1)).start("by-x", "P", "aaa", 1, Optional.of(1));
         verify(dataAccessLayer, times(1)).start("by-x", "Q", "bbb", 2, Optional.of(2));
@@ -352,7 +352,7 @@ public class IndexDriverTest {
                 .thenReturn(new HashSet<>(Arrays.asList(new IndexKeyItemPair("P", new HashValue(HashingAlgorithm.SHA256, "aaa")))));
 
         IndexDriver indexDriver = new IndexDriver(dataAccessLayer);
-        indexDriver.indexEntry( register, newEntry, indexFunction);
+        indexDriver.indexEntry(register, newEntry, indexFunction, new HashMap<>(), 0);
 
         verify(dataAccessLayer, times(1)).start("by-x", "P", "aaa", 2, Optional.empty());
         verifyNoMoreInteractions(indexDAO);
@@ -381,7 +381,7 @@ public class IndexDriverTest {
                 .thenReturn(new HashSet<>());
 
         IndexDriver indexDriver = new IndexDriver(dataAccessLayer);
-        indexDriver.indexEntry( register, newEntry, indexFunction);
+        indexDriver.indexEntry(register, newEntry, indexFunction, new HashMap<>(), 0);
 
         verify(dataAccessLayer, times(1)).end("by-x", "B", "P", "aaa", 3, Optional.empty());
         verifyNoMoreInteractions(indexDAO);

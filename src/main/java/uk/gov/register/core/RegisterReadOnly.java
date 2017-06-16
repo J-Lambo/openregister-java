@@ -17,6 +17,7 @@ public interface RegisterReadOnly {
 
     Optional<Entry> getEntry(int entryNumber);
     Collection<Entry> getEntries(int start, int limit);
+    Collection<Entry> getStagedEntries();
     Collection<Entry> getAllEntries();
     int getTotalEntries();
 

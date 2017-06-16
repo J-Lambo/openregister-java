@@ -55,6 +55,11 @@ public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer impleme
     }
 
     @Override
+    public int getTotalStagedIndexes() {
+        return stagedStartIndexes.size() + stagedEndIndexes.size();
+    }
+
+    @Override
     public int getTotalEntries() {
         // This method is called a lot, so we want to avoid checkpointing
         // every time it's called.  Instead we compute the result from stagedEntries,
@@ -117,11 +122,17 @@ public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer impleme
 //            record = Optional.of(new Record(entry.get(), items));
 //        }
 //        else {
-        checkpoint();
-        record = indexQueryDAO.findRecord(key, indexName);
-//        }
+//        checkpoint();
 
-//        Optional<Record> record = indexQueryDAO.findRecord(key, indexName);
+//        String computedKey = indexName +":"+ key;
+//
+//        Optional<StartIndex> startIndex = Optional.of(stagedStartIndexes.get(computedKey));
+//        Optional<EndIndex> endIndex = Optional.of(stagedEndIndexes.get(computedKey));
+//
+//
+//
+
+        record = indexQueryDAO.findRecord(key, indexName);
         return record.filter(r -> r.getItems().size() != 0);
     }
 

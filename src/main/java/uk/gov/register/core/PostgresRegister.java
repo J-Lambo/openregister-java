@@ -13,6 +13,7 @@ import uk.gov.register.views.RegisterProof;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PostgresRegister implements Register {
     private final RecordIndex recordIndex;
@@ -57,12 +58,13 @@ public class PostgresRegister implements Register {
     }
 
     @Override
-    public void updateIndexes() {
-        List<Entry> stagedEntries = new ArrayList<>(entryLog.getStagedEntries());
+    public void updateIndexes(List<Entry> stagedEntries) {
+        for (IndexFunction indexFunction : indexFunctions) {
+            Map<String, Record> indexRecords = dataAccessLayer.getIndexRecords(1000000, 0, indexFunction.getName()).stream().collect(Collectors.toMap(k -> k.getEntry().getKey(), v -> v));
+            int currentIndexEntryNumber = dataAccessLayer.getCurrentIndexEntryNumber(indexFunction.getName());
 
-        for (Entry entry : stagedEntries) {
-            for (IndexFunction indexFunction : indexFunctions) {
-                indexDriver.indexEntry(this, entry, indexFunction);
+            for (Entry entry : stagedEntries) {
+                indexDriver.indexEntry(this, entry, indexFunction, indexRecords, currentIndexEntryNumber);
             }
 
             // TODO: may need to move this back before the index function
@@ -103,6 +105,11 @@ public class PostgresRegister implements Register {
     @Override
     public List<Record> getRecords(int limit, int offset) {
         return recordIndex.getRecords(limit, offset);
+    }
+
+    @Override
+    public Collection<Entry> getStagedEntries() {
+        return entryLog.getStagedEntries();
     }
 
     @Override

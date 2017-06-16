@@ -20,6 +20,9 @@ public interface DataAccessLayer {
     Optional<Entry> getEntry(int entryNumber);
     Collection<Entry> getEntries(int start, int limit);
     Collection<Entry> getStagedEntries();
+
+    int getTotalStagedIndexes();
+
     Collection<Entry> getAllEntries();
     Iterator<Entry> getEntryIterator();
     Iterator<Entry> getEntryIterator(int totalEntries1, int totalEntries2);

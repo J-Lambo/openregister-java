@@ -16,8 +16,11 @@ public class IndexDriver {
         this.dataAccessLayer = dataAccessLayer;
     }
 
-    public void indexEntry(Register register, Entry entry, IndexFunction indexFunction) {
-        Optional<Record> currentRecord = dataAccessLayer.getIndexRecord(entry.getKey(), "record"); // register.getRecord(entry.getKey());
+    public void indexEntry(Register register, Entry entry, IndexFunction indexFunction, Map<String, Record> indexRecords, final int initialIndexEntryNumber) {
+        Optional<Record> currentRecord = indexRecords.containsKey(entry.getKey())
+                ? Optional.of(indexRecords.get(entry.getKey()))
+                : Optional.empty();
+                //dataAccessLayer.getIndexRecord(entry.getKey(), "record"); // register.getRecord(entry.getKey());
         Set<IndexKeyItemPair> currentIndexKeyItemPairs = new HashSet<>();
         if (currentRecord.isPresent()) {
             currentIndexKeyItemPairs.addAll(indexFunction.execute(register, currentRecord.get().getEntry()));
@@ -30,7 +33,7 @@ public class IndexDriver {
 
         TreeMap<String, List<IndexKeyItemPairEvent>> sortedEvents = groupEventsByKey(pairEvents);
 
-        AtomicInteger currentIndexEntryNumber = new AtomicInteger(dataAccessLayer.getCurrentIndexEntryNumber(indexFunction.getName()));
+        AtomicInteger currentIndexEntryNumber = new AtomicInteger(initialIndexEntryNumber + dataAccessLayer.getTotalStagedIndexes());
 
         for (Map.Entry<String, List<IndexKeyItemPairEvent>> keyValuePair : sortedEvents.entrySet()) {
             int newIndexEntryNumber = currentIndexEntryNumber.get() + 1;
