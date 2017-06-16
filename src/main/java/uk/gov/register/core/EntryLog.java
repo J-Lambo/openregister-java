@@ -19,6 +19,8 @@ public interface EntryLog {
 
     Collection<Entry> getEntries(int start, int limit);
 
+    Collection<Entry> getStagedEntries();
+
     Iterator<Entry> getIterator();
 
     Iterator<Entry> getIterator(int totalEntries1, int totalEntries2);

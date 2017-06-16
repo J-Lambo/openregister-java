@@ -3,8 +3,6 @@ package uk.gov.register.indexer;
 import uk.gov.register.core.Entry;
 import uk.gov.register.core.Record;
 import uk.gov.register.core.Register;
-import uk.gov.register.db.IndexDAO;
-import uk.gov.register.db.IndexQueryDAO;
 import uk.gov.register.indexer.function.IndexFunction;
 import uk.gov.register.store.DataAccessLayer;
 
@@ -19,7 +17,7 @@ public class IndexDriver {
     }
 
     public void indexEntry(Register register, Entry entry, IndexFunction indexFunction) {
-        Optional<Record> currentRecord = register.getRecord(entry.getKey());
+        Optional<Record> currentRecord = dataAccessLayer.getIndexRecord(entry.getKey(), "record"); // register.getRecord(entry.getKey());
         Set<IndexKeyItemPair> currentIndexKeyItemPairs = new HashSet<>();
         if (currentRecord.isPresent()) {
             currentIndexKeyItemPairs.addAll(indexFunction.execute(register, currentRecord.get().getEntry()));

@@ -230,15 +230,16 @@ official-colour:
     datatype: "string"
     cardinality: "1"
 food-premises-rating-value:
-  entry-number: "20"
-  item-hash: "sha-256:45c51f9308ac650f80c80b63aa19ea9af863d08b037152986a3188a0c53f6286"
-  entry-timestamp: "2016-04-21T10:19:58Z"
+  index-entry-number: "19"
+  entry-number: "19"
+  entry-timestamp: "2017-04-26T15:09:53Z"
+  key: "food-premises-rating-value"
   item:
-  - text: "A rating of the food hygiene served at a premises, 0-5 with 5 meaning 'very\
-      \ good'."
+  - phase: "discovery"
     field: "food-premises-rating-value"
-    phase: "alpha"
-    datatype: "integer"
+    datatype: "string"
+    text: "A rating of the food hygiene served at a premises, 0-5 with 5 meaning 'very\
+      \ good'."
     cardinality: "1"
 field:
   entry-number: "14"

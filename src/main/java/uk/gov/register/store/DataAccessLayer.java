@@ -19,6 +19,7 @@ public interface DataAccessLayer {
     void appendEntry(Entry entry);
     Optional<Entry> getEntry(int entryNumber);
     Collection<Entry> getEntries(int start, int limit);
+    Collection<Entry> getStagedEntries();
     Collection<Entry> getAllEntries();
     Iterator<Entry> getEntryIterator();
     Iterator<Entry> getEntryIterator(int totalEntries1, int totalEntries2);

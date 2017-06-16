@@ -12,10 +12,7 @@ import uk.gov.register.views.EntryProof;
 import uk.gov.register.views.RegisterProof;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class PostgresRegister implements Register {
     private final RecordIndex recordIndex;
@@ -25,6 +22,7 @@ public class PostgresRegister implements Register {
     private final ItemStore itemStore;
     private final RegisterFieldsConfiguration registerFieldsConfiguration;
     private final RegisterMetadata registerMetadata;
+    private final DataAccessLayer dataAccessLayer;
     private final IndexDriver indexDriver;
     private final List<IndexFunction> indexFunctions;
 
@@ -43,6 +41,7 @@ public class PostgresRegister implements Register {
         this.derivationRecordIndex = derivationRecordIndex;
         this.registerFieldsConfiguration = registerFieldsConfiguration;
         this.registerMetadata = registerMetadata;
+        this.dataAccessLayer = dataAccessLayer;
         this.indexDriver = new IndexDriver(dataAccessLayer);
         this.indexFunctions = indexFunctions;
     }
@@ -55,12 +54,20 @@ public class PostgresRegister implements Register {
     @Override
     public void appendEntry(Entry entry) {
         entryLog.appendEntry(entry);
+    }
 
-        for (IndexFunction indexFunction : indexFunctions) {
-            indexDriver.indexEntry(this, entry, indexFunction);
+    @Override
+    public void updateIndexes() {
+        List<Entry> stagedEntries = new ArrayList<>(entryLog.getStagedEntries());
+
+        for (Entry entry : stagedEntries) {
+            for (IndexFunction indexFunction : indexFunctions) {
+                indexDriver.indexEntry(this, entry, indexFunction);
+            }
+
+            // TODO: may need to move this back before the index function
+//            recordIndex.updateRecordIndex(entry);
         }
-
-        recordIndex.updateRecordIndex(entry);
     }
 
     @Override

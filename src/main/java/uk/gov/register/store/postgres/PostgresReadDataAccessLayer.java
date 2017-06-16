@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 public abstract class PostgresReadDataAccessLayer implements DataAccessLayer {
     private final EntryQueryDAO entryQueryDAO;
-    private final IndexQueryDAO indexQueryDAO;
+    protected final IndexQueryDAO indexQueryDAO;
     private final ItemQueryDAO itemQueryDAO;
     private final RecordQueryDAO recordQueryDAO;
 
@@ -76,7 +76,7 @@ public abstract class PostgresReadDataAccessLayer implements DataAccessLayer {
 
     @Override
     public int getTotalEntries() {
-        checkpoint();
+//        checkpoint();
         return entryQueryDAO.getTotalEntries();
     }
 
@@ -146,14 +146,11 @@ public abstract class PostgresReadDataAccessLayer implements DataAccessLayer {
 
     // Index
 
-    @Override
-    public Optional<Record> getIndexRecord(String key, String indexName) {
-        Optional<Record> record = indexQueryDAO.findRecord(key, indexName);
-        return record.filter(r -> r.getItems().size() != 0);
-    }
+
 
     @Override
     public List<Record> getIndexRecords(int limit, int offset, String indexName) {
+        checkpoint();
         return indexQueryDAO.findRecords(limit, offset, indexName);
     }
 
@@ -173,4 +170,6 @@ public abstract class PostgresReadDataAccessLayer implements DataAccessLayer {
     }
 
     protected abstract void checkpoint();
+
+    protected abstract void checkpointIndexes();
 }

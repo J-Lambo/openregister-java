@@ -126,6 +126,7 @@ public class RegisterContext implements
             Register register = buildTransactionalRegister(handle, dataAccessLayer, transactionalMemoizationStore);
             consumer.accept(register);
             dataAccessLayer.checkpoint();
+            dataAccessLayer.checkpointIndexes();
         });
         transactionalMemoizationStore.commitHashesToStore();
     }
@@ -139,6 +140,7 @@ public class RegisterContext implements
                 RegisterResult result = registerOperationFunc.apply(register);
                 if (result.isSuccessful()) {
                     dataAccessLayer.checkpoint();
+                    dataAccessLayer.checkpointIndexes();
                     transactionalMemoizationStore.commitHashesToStore();
                 } else {
                     throw new RegisterResultException(result);
