@@ -14,20 +14,18 @@ public class StartIndex extends Index {
         this.startIndexEntryNumber = startIndexEntryNumber;
     }
 
+    @SuppressWarnings("unused, used by @BindBean")
     public String getKey() {
         return key;
     }
 
+    @SuppressWarnings("unused, used by @BindBean")
     public int getStartEntryNumber() {
         return startEntryNumber;
     }
 
+    @SuppressWarnings("unused, used by @BindBean")
     public Optional<Integer> getStartIndexEntryNumber() {
         return startIndexEntryNumber;
-    }
-
-    @Override
-    public boolean isStart() {
-        return true;
     }
 }

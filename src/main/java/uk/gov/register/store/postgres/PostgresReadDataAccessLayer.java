@@ -145,13 +145,16 @@ public abstract class PostgresReadDataAccessLayer implements DataAccessLayer {
     }
 
     // Index
-
-
-
     @Override
     public List<Record> getIndexRecords(int limit, int offset, String indexName) {
         checkpoint();
         return indexQueryDAO.findRecords(limit, offset, indexName);
+    }
+
+    /* Not being used yet */
+    public List<Record> getIndexRecords(String indexName, Optional<Integer> limit, Optional<Integer> offset) {
+        checkpoint();
+        return indexQueryDAO.findRecords(indexName, limit, offset);
     }
 
     @Override

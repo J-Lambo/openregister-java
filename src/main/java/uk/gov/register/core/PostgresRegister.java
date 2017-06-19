@@ -66,9 +66,6 @@ public class PostgresRegister implements Register {
             for (Entry entry : stagedEntries) {
                 indexDriver.indexEntry(this, entry, indexFunction, indexRecords, currentIndexEntryNumber);
             }
-
-            // TODO: may need to move this back before the index function
-//            recordIndex.updateRecordIndex(entry);
         }
     }
 

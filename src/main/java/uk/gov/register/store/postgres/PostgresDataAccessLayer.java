@@ -74,6 +74,15 @@ public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer impleme
     }
 
     @Override
+    public Optional<Item> getItemBySha256(HashValue hash) {
+        if (stagedItems.containsKey(hash)) {
+            return Optional.of(stagedItems.get(hash));
+        }
+
+        return super.getItemBySha256(hash);
+    }
+
+    @Override
     public void updateRecordIndex(Entry entry) {
         stagedCurrentKeys.put(entry.getKey(), entry.getEntryNumber());
 
@@ -85,54 +94,16 @@ public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer impleme
     @Override
     public void start(String indexName, String key, String itemHash, int currentEntryNumber, Optional<Integer> startIndexEntryNumber) {
         stagedStartIndexes.add(new StartIndex(indexName, key, itemHash, currentEntryNumber, startIndexEntryNumber));
-//        indexDAO.start(indexName, key, itemHash, currentEntryNumber, startIndexEntryNumber);
     }
 
     @Override
     public void end(String indexName, String entryKey, String indexKey, String itemHash, int endEntryNumber, Optional<Integer> endIndexEntryNumber) {
         stagedEndIndexes.add(new EndIndex(indexName, entryKey, indexKey, itemHash, endEntryNumber, endIndexEntryNumber));
-//        indexDAO.end(indexName, entryKey, indexKey, itemHash, endEntryNumber, endIndexEntryNumber);
     }
 
     @Override
     public Optional<Record> getIndexRecord(String key, String indexName) {
-        Optional<Record> record;
-        // if (cachedIndexRecords.contains(a record for the current key and name) {
-        //      return the cached record;
-        // }
-        // else {
-        //      if (stagedEntries.stream().anyMatch(e -> e.getKey().equals(key)) {
-        //          there is a staged entry with the desired key, which hasn't been written to the DB yet,
-        //          so return an empty Record
-        //          return Optional.empty();
-        //      }
-        //
-        //      We've got here, meaning there aren't staged entries for the current key.
-        //      We probably need to check the DB index but doing so will cause everything staged to be written,
-        //      making our work so far pointless. We should perhaps instead keep an up-to-date set of indexes which
-        //      are taken at the start of every transaction, to avoid needing to write items and entries to the DB
-        //      during our transaction.
-        // }
-
-//        if (stagedEntries.stream().anyMatch(e -> e.getKey().equals(key))) {
-//            Optional<Entry> entry = stagedEntries.stream().filter(e -> e.getKey().equals(key)).reduce((a,b) -> b);
-////            Integer entryNumber = stagedCurrentKeys.get(key);
-////            Optional<Entry> entry = stagedEntries.stream().filter(e -> e.getEntryNumber().equals(entryNumber)).findFirst();
-//            List<Item> items = stagedItems.values().stream().filter(i -> entry.get().getItemHashes().contains(i.getSha256hex())).collect(Collectors.toList());
-//            record = Optional.of(new Record(entry.get(), items));
-//        }
-//        else {
-//        checkpoint();
-
-//        String computedKey = indexName +":"+ key;
-//
-//        Optional<StartIndex> startIndex = Optional.of(stagedStartIndexes.get(computedKey));
-//        Optional<EndIndex> endIndex = Optional.of(stagedEndIndexes.get(computedKey));
-//
-//
-//
-
-        record = indexQueryDAO.findRecord(key, indexName);
+        Optional<Record> record = indexQueryDAO.findRecord(key, indexName);
         return record.filter(r -> r.getItems().size() != 0);
     }
 
@@ -140,7 +111,7 @@ public class PostgresDataAccessLayer extends PostgresReadDataAccessLayer impleme
     public void checkpoint() {
         writeStagedEntriesToDatabase();
         writeStagedItemsToDatabase();
-        writeStagedCurrentKeysToDatabase();
+//        writeStagedCurrentKeysToDatabase();
     }
 
     @Override

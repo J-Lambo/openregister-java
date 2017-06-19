@@ -16,6 +16,4 @@ public abstract class Index {
     public String getItemHash() {
         return itemHash;
     }
-
-    public abstract boolean isStart();
 }

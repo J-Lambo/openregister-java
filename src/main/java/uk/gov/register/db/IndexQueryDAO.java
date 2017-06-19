@@ -25,6 +25,10 @@ public interface IndexQueryDAO {
     @RegisterMapper(DerivationRecordMapper.class)
     List<Record> findRecords(@Bind("limit") int limit, @Bind("offset") int offset, @Bind("name") String derivationName);
 
+    @SqlQuery(recordQuery)
+    @RegisterMapper(DerivationRecordMapper.class)
+    List<Record> findRecords(@Bind("name") String derivationName, @Bind("limit") Optional<Integer> limit, @Bind("offset") Optional<Integer> offset);
+
     @SqlQuery("select max(r.index_entry_number) from (select greatest(start_index_entry_number, end_index_entry_number) as index_entry_number from :schema.index where name = :name) r")
     int getCurrentIndexEntryNumber(@Bind("name") String indexName);
 

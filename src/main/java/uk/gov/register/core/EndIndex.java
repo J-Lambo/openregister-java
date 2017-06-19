@@ -16,24 +16,23 @@ public class EndIndex extends Index {
         this.endIndexEntryNumber = endIndexEntryNumber;
     }
 
+    @SuppressWarnings("unused, used by @BindBean")
     public String getEntryKey() {
         return entryKey;
     }
 
+    @SuppressWarnings("unused, used by @BindBean")
     public String getIndexKey() {
         return indexKey;
     }
 
+    @SuppressWarnings("unused, used by @BindBean")
     public int getEndEntryNumber() {
         return endEntryNumber;
     }
 
+    @SuppressWarnings("unused, used by @BindBean")
     public Optional<Integer> getEndIndexEntryNumber() {
         return endIndexEntryNumber;
-    }
-
-    @Override
-    public boolean isStart() {
-        return false;
     }
 }
