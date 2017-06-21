@@ -48,7 +48,9 @@ public interface DataAccessLayer {
     List<Record> getIndexRecords(int limit, int offset, String indexName);
     int getTotalIndexRecords(String indexName);
     int getCurrentIndexEntryNumber(String indexName);
+    int getExistingIndexCountForItem(String indexName, String key, String sha256hex);
 
     void start(String indexName, String key, String itemHash, int currentEntryNumber, Optional<Integer> startIndexEntryNumber);
     void end(String indexName, String entryKey, String indexKey, String itemHash, int endEntryNumber, Optional<Integer> endIndexEntryNumber);
+
 }
