@@ -2,6 +2,7 @@ package uk.gov.register.functional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.dropwizard.jackson.Jackson;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -14,18 +15,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.register.functional.app.TestRegister.address;
+import static uk.gov.register.functional.app.TestRegister.local_authority_eng;
 
 public class DataDownloadFunctionalTest {
 
@@ -39,17 +40,17 @@ public class DataDownloadFunctionalTest {
     @Before
     public void publishTestMessages() {
         register.wipe();
-        register.loadRsf(
-                address,
-                "add-item\t{\"address\":\"12345\",\"street\":\"ellis\"}\n" +
-                "append-entry\tuser\t12345\t2017-06-01T10:13:27Z\tsha-256:19205fafe65406b9b27fce1b689abc776df4ddcf150c28b29b73b4ea054af6b9\n" +
-                "add-item\t{\"address\":\"6789\",\"street\":\"presley\"}\n" +
-                "append-entry\tuser\t6789\t2017-06-01T10:13:27Z\tsha-256:bd239db51960376826b937a615f0f3397485f00611d35bb7e951e357bf73b934\n" +
-                "add-item\t{\"address\":\"12345\",\"street\":\"foo\"}\n" +
-                "append-entry\tuser\t12345\t2017-06-01T10:13:27Z\tsha-256:cc8a7c42275c84b94c6e282ae88b3dbcc06319156fc4539a2f39af053bf30592\n" +
-                "add-item\t{\"address\":\"145678\",\"street\":\"ellis\"}\n" +
-                "append-entry\tuser\t145678\t2017-06-01T10:13:27Z\tsha-256:8ac926428ee49fb83c02bdd2556e62e84cfd9e636cd35eb1306ac8cb661e4983\n" +
-                "append-entry\tuser\t12345\t2017-06-01T10:13:27Z\tsha-256:19205fafe65406b9b27fce1b689abc776df4ddcf150c28b29b73b4ea054af6b9");
+//        register.loadRsf(
+//                address,
+//                "add-item\t{\"address\":\"12345\",\"street\":\"ellis\"}\n" +
+//                "append-entry\tuser\t12345\t2017-06-01T10:13:27Z\tsha-256:19205fafe65406b9b27fce1b689abc776df4ddcf150c28b29b73b4ea054af6b9\n" +
+//                "add-item\t{\"address\":\"6789\",\"street\":\"presley\"}\n" +
+//                "append-entry\tuser\t6789\t2017-06-01T10:13:27Z\tsha-256:bd239db51960376826b937a615f0f3397485f00611d35bb7e951e357bf73b934\n" +
+//                "add-item\t{\"address\":\"12345\",\"street\":\"foo\"}\n" +
+//                "append-entry\tuser\t12345\t2017-06-01T10:13:27Z\tsha-256:cc8a7c42275c84b94c6e282ae88b3dbcc06319156fc4539a2f39af053bf30592\n" +
+//                "add-item\t{\"address\":\"145678\",\"street\":\"ellis\"}\n" +
+//                "append-entry\tuser\t145678\t2017-06-01T10:13:27Z\tsha-256:8ac926428ee49fb83c02bdd2556e62e84cfd9e636cd35eb1306ac8cb661e4983\n" +
+//                "append-entry\tuser\t12345\t2017-06-01T10:13:27Z\tsha-256:19205fafe65406b9b27fce1b689abc776df4ddcf150c28b29b73b4ea054af6b9");
     }
 
     @Test
@@ -118,7 +119,7 @@ public class DataDownloadFunctionalTest {
 
         assertThat(rsfLines.get(0), equalTo("assert-root-hash\tsha-256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"));
 
-        assertThat(rsfLines, hasItems(
+        assertThat(rsfLines, containsInAnyOrder(
                 "add-item\t{\"address\":\"12345\",\"street\":\"ellis\"}",
                 "add-item\t{\"address\":\"145678\",\"street\":\"ellis\"}",
                 "add-item\t{\"address\":\"6789\",\"street\":\"presley\"}",
@@ -264,6 +265,94 @@ public class DataDownloadFunctionalTest {
         assertThat(partialRsfLines.get(10), is(fullRsfLines.get(10)));
     }
 
+    @Test
+    public void downloadIndexRSF_shouldReturnCorrectIndexRSF_whenRegisterRSFContainsEntryWhereItemMovesKey() {
+        register.loadRsf(local_authority_eng,
+            "add-item\t{\"local-authority-eng\":\"BAS\",\"local-authority-type\":\"UA\",\"name\":\"Bath\",\"official-name\":\"Bath\",\"start-date\":\"1996-04-01\"}\n" +
+            "add-item\t{\"local-authority-eng\":\"BAS\",\"local-authority-type\":\"UA\",\"name\":\"New Bath\",\"official-name\":\"Bath\",\"start-date\":\"1996-04-01\"}\n" +
+            "add-item\t{\"local-authority-eng\":\"BAS\",\"local-authority-type\":\"MD\",\"name\":\"New Bath\",\"official-name\":\"Bath\",\"start-date\":\"1996-04-01\"}\n" +
+            "append-entry\tuser\tBAS\t2016-04-05T13:23:05Z\tsha-256:0957b9d2e02eab7ffeda290dac485dacab54abd0264a5eb789906e091856fbeb\n" +
+            "append-entry\tuser\tBAS\t2016-04-05T13:23:05Z\tsha-256:05bc13575c70f73e7660863bb1ce827cb6008b4226c46fb18b2c9274d7990c25\n" +
+            "append-entry\tuser\tBAS\t2016-04-05T13:23:05Z\tsha-256:6395e87181af53acd4bf9d96aca5d1d2de9af7927c80f4f8fc415da878f51039"
+        );
+
+        Response response = register.getRequest(local_authority_eng, "/index/local-authority-by-type/download-rsf");
+        List<String> rsfLines = getRsfLinesFrom(response);
+
+        assertThat(rsfLines.get(0), equalTo("assert-root-hash\tsha-256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"));
+        assertThat(rsfLines.subList(1, 4), containsInAnyOrder(
+            "add-item\t{\"local-authority-eng\":\"BAS\",\"local-authority-type\":\"UA\",\"name\":\"Bath\",\"official-name\":\"Bath\",\"start-date\":\"1996-04-01\"}",
+            "add-item\t{\"local-authority-eng\":\"BAS\",\"local-authority-type\":\"UA\",\"name\":\"New Bath\",\"official-name\":\"Bath\",\"start-date\":\"1996-04-01\"}",
+            "add-item\t{\"local-authority-eng\":\"BAS\",\"local-authority-type\":\"MD\",\"name\":\"New Bath\",\"official-name\":\"Bath\",\"start-date\":\"1996-04-01\"}"
+        ));
+
+        assertFormattedEntry(rsfLines.get(4), "UA", "sha-256:0957b9d2e02eab7ffeda290dac485dacab54abd0264a5eb789906e091856fbeb");
+        assertFormattedEntry(rsfLines.get(5), "UA", "sha-256:05bc13575c70f73e7660863bb1ce827cb6008b4226c46fb18b2c9274d7990c25");
+        assertFormattedEntry(rsfLines.get(6), "MD", "sha-256:6395e87181af53acd4bf9d96aca5d1d2de9af7927c80f4f8fc415da878f51039");
+        assertFormattedEntry(rsfLines.get(7), "UA", "");
+    }
+
+    @Test
+    public void downloadIndexRSF_shouldReturnCorrectIndexRSF_whenRegisterRSFContainsItemThatExistsAgainstMultipleEntries() {
+        System.setProperty("multi-item-entries-enabled", "true");
+        Response res = register.loadRsf(local_authority_eng,
+            "add-item\t{\"local-authority-eng\":\"BAS\",\"local-authority-type\":\"R\",\"name\":\"Bath\",\"official-name\":\"Bath\",\"start-date\":\"1996-04-01\"}\n" +
+            "add-item\t{\"local-authority-eng\":\"DDE\",\"local-authority-type\":\"P\",\"name\":\"Dundee\",\"official-name\":\"Dundee\",\"start-date\":\"1996-04-01\"}\n" +
+            "add-item\t{\"local-authority-eng\":\"CRK\",\"local-authority-type\":\"Q\",\"name\":\"Cork\",\"official-name\":\"Cork\",\"start-date\":\"1996-04-01\"}\n" +
+            "append-entry\tuser\tfirstKey\t2016-04-05T13:23:05Z\tsha-256:6ce441486301fadb5527fe9173da7bb3ad176a21459f06c1eb6da70bf417d7fe\n" +
+            "append-entry\tuser\tfirstKey\t2016-04-05T13:23:05Z\tsha-256:6ce441486301fadb5527fe9173da7bb3ad176a21459f06c1eb6da70bf417d7fe;sha-256:59516279c591e62cb7ae7defbdd2e638d506056c5a6013e13d1b7926b21259ba\n" +
+            "append-entry\tuser\tsecondKey\t2016-04-05T13:23:05Z\tsha-256:59516279c591e62cb7ae7defbdd2e638d506056c5a6013e13d1b7926b21259ba\n" +
+            "append-entry\tuser\tsecondKey\t2016-04-05T13:23:05Z\tsha-256:59516279c591e62cb7ae7defbdd2e638d506056c5a6013e13d1b7926b21259ba;sha-256:71d12f0d5fd71b09be0a306902d8d3a17fb7d9896e087a5e0c1904b54746f231\n" +
+            "append-entry\tuser\tsecondKey\t2016-04-05T13:23:05Z\tsha-256:71d12f0d5fd71b09be0a306902d8d3a17fb7d9896e087a5e0c1904b54746f231"
+        );
+
+        Response response = register.getRequest(local_authority_eng, "/index/local-authority-by-type/download-rsf");
+        List<String> rsfLines = getRsfLinesFrom(response);
+
+        assertThat(rsfLines.get(0), equalTo("assert-root-hash\tsha-256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"));
+        assertThat(rsfLines.subList(1, 4), containsInAnyOrder(
+            "add-item\t{\"local-authority-eng\":\"BAS\",\"local-authority-type\":\"R\",\"name\":\"Bath\",\"official-name\":\"Bath\",\"start-date\":\"1996-04-01\"}",
+            "add-item\t{\"local-authority-eng\":\"DDE\",\"local-authority-type\":\"P\",\"name\":\"Dundee\",\"official-name\":\"Dundee\",\"start-date\":\"1996-04-01\"}",
+            "add-item\t{\"local-authority-eng\":\"CRK\",\"local-authority-type\":\"Q\",\"name\":\"Cork\",\"official-name\":\"Cork\",\"start-date\":\"1996-04-01\"}"
+        ));
+
+        assertFormattedEntry(rsfLines.get(4), "R", "sha-256:6ce441486301fadb5527fe9173da7bb3ad176a21459f06c1eb6da70bf417d7fe");
+        assertFormattedEntry(rsfLines.get(5), "P", "sha-256:59516279c591e62cb7ae7defbdd2e638d506056c5a6013e13d1b7926b21259ba");
+        assertFormattedEntry(rsfLines.get(6), "Q", "sha-256:71d12f0d5fd71b09be0a306902d8d3a17fb7d9896e087a5e0c1904b54746f231");
+    }
+
+    @Test
+    public void downloadIndexRSF_shouldReturnCorrectIndexRSF_whenRegisterRSFAddsTwoItemsAgainstDifferentKeysThenRemovesTheFirstInstance() throws IOException {
+        System.setProperty("multi-item-entries-enabled", "true");
+        Response res = register.loadRsf(local_authority_eng,
+            "add-item\t{\"local-authority-eng\":\"BAS\",\"local-authority-type\":\"R\",\"name\":\"Bath\",\"official-name\":\"Bath\",\"start-date\":\"1996-04-01\"}\n" +
+            "add-item\t{\"local-authority-eng\":\"DDE\",\"local-authority-type\":\"P\",\"name\":\"Dundee\",\"official-name\":\"Dundee\",\"start-date\":\"1996-04-01\"}\n" +
+            "append-entry\tuser\tfirstKey\t2016-04-05T13:23:05Z\tsha-256:6ce441486301fadb5527fe9173da7bb3ad176a21459f06c1eb6da70bf417d7fe\n" +
+            "append-entry\tuser\tfirstKey\t2016-04-05T13:23:05Z\tsha-256:6ce441486301fadb5527fe9173da7bb3ad176a21459f06c1eb6da70bf417d7fe;sha-256:59516279c591e62cb7ae7defbdd2e638d506056c5a6013e13d1b7926b21259ba\n" +
+            "append-entry\tuser\tsecondKey\t2016-04-05T13:23:05Z\tsha-256:59516279c591e62cb7ae7defbdd2e638d506056c5a6013e13d1b7926b21259ba\n" +
+            "append-entry\tuser\tfirstKey\t2016-04-05T13:23:05Z\tsha-256:6ce441486301fadb5527fe9173da7bb3ad176a21459f06c1eb6da70bf417d7fe\n"
+        );
+
+        Response response = register.getRequest(local_authority_eng, "/index/local-authority-by-type/download-rsf");
+        List<String> rsfLines = getRsfLinesFrom(response);
+
+        assertThat(rsfLines.get(0), equalTo("assert-root-hash\tsha-256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"));
+        assertThat(rsfLines.subList(1, 3), containsInAnyOrder(
+            "add-item\t{\"local-authority-eng\":\"BAS\",\"local-authority-type\":\"R\",\"name\":\"Bath\",\"official-name\":\"Bath\",\"start-date\":\"1996-04-01\"}",
+            "add-item\t{\"local-authority-eng\":\"DDE\",\"local-authority-type\":\"P\",\"name\":\"Dundee\",\"official-name\":\"Dundee\",\"start-date\":\"1996-04-01\"}"
+        ));
+
+        assertFormattedEntry(rsfLines.get(3), "R", "sha-256:6ce441486301fadb5527fe9173da7bb3ad176a21459f06c1eb6da70bf417d7fe");
+        assertFormattedEntry(rsfLines.get(4), "P", "sha-256:59516279c591e62cb7ae7defbdd2e638d506056c5a6013e13d1b7926b21259ba");
+
+        Response indexRecordsResponse = register.getRequest(local_authority_eng, "/index/local-authority-by-type/record/P.json");
+        assertThat(indexRecordsResponse.getStatus(), is(200));
+
+        JsonNode result = Jackson.newObjectMapper().readValue(indexRecordsResponse.readEntity(String.class), JsonNode.class).get("P");
+        assertThat(result.get("entry-number").textValue(), is("3"));
+        assertThat(result.get("index-entry-number").textValue(), is("2"));
+    }
+
     private List<String> getRsfLinesFrom(Response response) {
         InputStream is = response.readEntity(InputStream.class);
         return new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.toList());
@@ -271,11 +360,19 @@ public class DataDownloadFunctionalTest {
 
     private void assertFormattedEntry(String actualEntry, String expectedKey, String expectedHash) {
         String[] parts = actualEntry.split("\t");
-        assertThat(parts.length, is(5));
+        List<String> expectedHashes = expectedHash == "" ? Arrays.asList() : Arrays.asList(expectedHash);
+
+        if (expectedHashes.isEmpty()) {
+            assertThat(parts.length, is(4));
+        }
+        else {
+            assertThat(parts.length, is(5));
+            assertThat(expectedHashes.contains(parts[4]), is(true));
+        }
+
         assertThat(parts[0], is("append-entry"));
         assertThat(parts[1], is("user"));
         assertThat(parts[2], is(expectedKey));
-        assertThat(parts[4], is(expectedHash));
     }
 
     private Map<String, JsonNode> getEntries(InputStream inputStream) throws IOException {
