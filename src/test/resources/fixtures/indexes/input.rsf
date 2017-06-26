@@ -1,0 +1,8 @@
+add-item	{"name":"Notts","start-date":"1990"}
+add-item	{"name":"London","start-date":"1880"}
+add-item	{"name":"Leics","start-date":"1770"}
+append-entry	user	MD	2016-04-05T13:23:05Z	sha-256:768ccbd7702169778bcc43abe57cd834b977fdef887567c637b296a6e379b4e3
+append-entry	user	MD	2016-04-05T13:23:05Z	sha-256:768ccbd7702169778bcc43abe57cd834b977fdef887567c637b296a6e379b4e3,sha-256:f2ad63acbcff98050b0ba1fe708f33711dee1cce8931ba876f0cf2ad6d0225a0
+append-entry	user	CTY	2016-04-05T13:23:05Z	sha-256:3300687af84cc4c365407484f93848695a0d82b0918c894e56d2d49ab93ba27c
+append-entry	user	CTY	2016-04-05T13:23:05Z	sha-256:3300687af84cc4c365407484f93848695a0d82b0918c894e56d2d49ab93ba27c,sha-256:f2ad63acbcff98050b0ba1fe708f33711dee1cce8931ba876f0cf2ad6d0225a0
+append-entry	user	MD	2016-04-05T13:23:05Z	sha-256:768ccbd7702169778bcc43abe57cd834b977fdef887567c637b296a6e379b4e3
